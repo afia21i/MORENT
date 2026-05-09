@@ -9,6 +9,7 @@
     body { display: flex; flex-direction: column; min-height: 100vh; }
     .app { display: flex; flex: 1; }
 
+    /* ── SIDEBAR ── */
     .sidebar {
       width: 240px; flex-shrink: 0;
       background: var(--white);
@@ -35,7 +36,7 @@
     .sidebar-link:hover { background: var(--bg); color: var(--text-primary); }
     .sidebar-link.active { background: var(--blue); color: var(--white); }
     .sidebar-link.active svg { stroke: white; }
-    .sidebar-link svg { width: 20px; height: 20px; flex-shrink: 0; }
+    .sidebar-link svg { width: 20px; height: 20px; flex-shrink: 0; stroke: currentColor; }
     .sidebar-bottom { margin-top: auto; padding-top: 24px; border-top: 1px solid var(--border-light); }
     .dark-toggle { display: flex; align-items: center; gap: 10px; padding: 12px 16px; }
     .toggle-track {
@@ -45,69 +46,116 @@
     }
     .toggle-thumb { width: 18px; height: 18px; border-radius: 50%; background: var(--blue); transition: transform 0.2s; }
 
-    .dashboard-main { flex: 1; padding: 28px; display: flex; flex-direction: column; gap: 24px; }
-    .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    /* ── MAIN ── */
+    .dashboard-main { flex: 1; padding: 28px; display: flex; flex-direction: column; gap: 24px; overflow-x: hidden; }
 
-    .dash-card { background: var(--white); border-radius: var(--radius-xl); padding: 24px; box-shadow: var(--shadow-sm); }
+    /* ── TOP GRID: detail (left) + right column (donut + tx) ── */
+    .dashboard-grid { display: grid; grid-template-columns: 1fr 380px; gap: 24px; }
+
+    .dash-card {
+      background: var(--white); border-radius: var(--radius-xl);
+      padding: 24px; box-shadow: var(--shadow-sm);
+    }
     .dash-card-title { font-size: 18px; font-weight: 800; margin-bottom: 16px; }
+
+    /* ── MAP PLACEHOLDER ── */
     .map-placeholder {
       background: linear-gradient(135deg, #e8f0fe 0%, #d0e2ff 100%);
       border-radius: var(--radius-lg); height: 220px;
-      display: flex; align-items: center; justify-content: center;
-      position: relative; overflow: hidden; margin-bottom: 20px;
+      overflow: hidden; margin-bottom: 20px;
     }
-    .map-placeholder svg { width: 100%; height: 100%; opacity: 0.7; }
+    .map-placeholder svg { width: 100%; height: 100%; }
+
+    /* ── CAR INFO ROW ── */
     .map-car-info { display: flex; align-items: center; gap: 16px; }
-    .map-car-img { width: 80px; height: 64px; background: linear-gradient(135deg,#3563E9,#54A6FF); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0; }
+    .map-car-img {
+      width: 80px; height: 64px;
+      background: linear-gradient(135deg, #3563E9, #54A6FF);
+      border-radius: var(--radius); display: flex; align-items: center;
+      justify-content: center; font-size: 28px; flex-shrink: 0; overflow: hidden;
+    }
     .map-car-img img { width: 72px; height: 56px; object-fit: contain; }
     .map-car-name { font-size: 20px; font-weight: 800; }
-    .map-car-type { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
-    .map-car-id { font-size: 13px; color: var(--text-secondary); margin-left: auto; }
+    .map-car-type { font-size: 13px; color: var(--text-secondary); font-weight: 500; margin-top: 2px; }
+    .map-car-id   { font-size: 13px; color: var(--text-secondary); margin-left: auto; font-weight: 600; }
+
+    /* ── PICKUP / DROPOFF ── */
     .booking-info { margin-top: 20px; }
-    .pickup-dropoff { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .booking-dot-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; font-size: 14px; font-weight: 700; }
+    .pickup-dropoff { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .booking-dot-row {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 12px; font-size: 14px; font-weight: 700;
+    }
+    .dot-blue {
+      width: 12px; height: 12px; border-radius: 50; border-radius: 50%;
+      background: var(--blue); border: 3px solid rgba(53,99,233,0.25);
+      flex-shrink: 0;
+    }
+    .dot-grey {
+      width: 12px; height: 12px; border-radius: 50%;
+      background: #90A3BF; border: 3px solid rgba(144,163,191,0.25);
+      flex-shrink: 0;
+    }
     .booking-fields-inline { display: flex; gap: 12px; }
     .booking-field-sm { flex: 1; }
-    .booking-field-sm label { font-size: 11px; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px; }
-    .booking-field-sm select {
-      width: 100%; padding: 8px 10px; border: 1px solid var(--border-light);
-      border-radius: 8px; font-size: 13px; font-weight: 600;
-      color: var(--text-primary); background: var(--bg); cursor: pointer;
-      appearance: none;
+    .booking-field-sm label {
+      font-size: 11px; font-weight: 700; color: var(--text-secondary);
+      display: block; margin-bottom: 4px; text-transform: capitalize;
     }
-    .total-rental { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-light); padding-top: 20px; margin-top: 20px; }
-    .total-rental-label p { font-size: 14px; font-weight: 700; }
+    .booking-field-sm .field-value {
+      font-size: 13px; font-weight: 600; color: var(--text-primary);
+      padding: 8px 10px;
+      border: 1px solid var(--border-light);
+      border-radius: 8px; background: var(--bg);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .field-chevron { color: var(--text-secondary); font-size: 10px; }
+
+    /* ── TOTAL RENTAL ── */
+    .total-rental {
+      display: flex; justify-content: space-between; align-items: center;
+      border-top: 1px solid var(--border-light); padding-top: 20px; margin-top: 20px;
+    }
+    .total-rental-label p     { font-size: 14px; font-weight: 700; }
     .total-rental-label small { font-size: 12px; color: var(--text-secondary); }
     .total-rental-price { font-size: 28px; font-weight: 800; }
 
+    /* ── DONUT ── */
     .donut-wrap { display: flex; align-items: center; gap: 32px; }
-    .donut-chart { position: relative; width: 180px; height: 180px; flex-shrink: 0; }
-    .donut-chart svg { transform: rotate(-90deg); }
-    .donut-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-    .donut-center .num { font-size: 22px; font-weight: 800; }
-    .donut-center .label { font-size: 11px; color: var(--text-secondary); font-weight: 600; }
-    .donut-legend { display: flex; flex-direction: column; gap: 12px; }
-    .legend-item { display: flex; align-items: center; gap: 10px; }
-    .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-    .legend-name { font-size: 14px; font-weight: 600; flex: 1; }
-    .legend-count { font-size: 14px; font-weight: 700; }
+    .donut-chart { position: relative; width: 160px; height: 160px; flex-shrink: 0; }
+    .donut-chart svg { transform: rotate(-90deg); width: 160px; height: 160px; }
+    .donut-center {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 2px;
+    }
+    .donut-center .num { font-size: 26px; font-weight: 800; color: var(--text-primary); line-height: 1; }
+    .donut-center .lbl { font-size: 11px; color: var(--text-secondary); font-weight: 600; letter-spacing: 0.3px; }
+    .donut-legend { display: flex; flex-direction: column; gap: 14px; flex: 1; }
+    .legend-item  { display: flex; align-items: center; gap: 10px; }
+    .legend-dot   { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .legend-name  { font-size: 13px; font-weight: 600; color: var(--text-muted); flex: 1; }
+    .legend-count { font-size: 13px; font-weight: 700; color: var(--text-primary); min-width: 44px; text-align: right; }
 
+    /* ── TRANSACTIONS ── */
     .tx-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     .tx-header h3 { font-size: 18px; font-weight: 800; }
-    .tx-item { display: flex; align-items: center; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--border-light); }
+    .tx-item {
+      display: flex; align-items: center; gap: 14px;
+      padding: 12px 0; border-bottom: 1px solid var(--border-light);
+    }
     .tx-item:last-child { border-bottom: none; }
-    .tx-car-img { width: 60px; height: 44px; background: var(--bg); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; overflow: hidden; }
+    .tx-car-img {
+      width: 60px; height: 44px; background: var(--bg);
+      border-radius: var(--radius); display: flex; align-items: center;
+      justify-content: center; font-size: 20px; flex-shrink: 0; overflow: hidden;
+    }
     .tx-car-img img { width: 56px; height: 40px; object-fit: contain; }
-    .tx-name { font-size: 15px; font-weight: 700; }
-    .tx-type { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
-    .tx-date { font-size: 12px; color: var(--text-secondary); margin-left: auto; text-align: right; }
-    .tx-price { font-size: 16px; font-weight: 800; text-align: right; }
-
-    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-    .stat-card { background: var(--white); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow-sm); }
-    .stat-card .stat-label { font-size: 13px; color: var(--text-secondary); font-weight: 500; margin-bottom: 8px; }
-    .stat-card .stat-value { font-size: 28px; font-weight: 800; }
-    .stat-card .stat-sub { font-size: 12px; color: var(--green); font-weight: 600; margin-top: 4px; }
+    .tx-name  { font-size: 15px; font-weight: 700; }
+    .tx-type  { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
+    .tx-date  { font-size: 12px; color: var(--text-secondary); margin-left: auto; text-align: right; }
+    .tx-price { font-size: 16px; font-weight: 800; min-width: 60px; text-align: right; }
   </style>
 </head>
 <body>
@@ -115,137 +163,180 @@
 <div id="navbar-placeholder"></div>
 
 <div class="app">
+  <!-- ── SIDEBAR ── -->
   <aside class="sidebar">
     <div class="sidebar-section-label">Main Menu</div>
-    <a class="sidebar-link active" href="dashboard.html">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+
+    <a class="sidebar-link active" href="/dashboard/">
+      <svg fill="none" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
       Dashboard
     </a>
-    <a class="sidebar-link" href="category.html">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="4" rx="1"/><rect x="3" y="10" width="18" height="4" rx="1"/><rect x="3" y="17" width="18" height="4" rx="1"/></svg>
+    <a class="sidebar-link" href="/category.html">
+      <svg fill="none" stroke-width="2" viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3"/><rect x="9" y="11" width="14" height="10" rx="2"/></svg>
       Car Rent
     </a>
     <a class="sidebar-link" href="#">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <svg fill="none" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
       Insight
     </a>
     <a class="sidebar-link" href="#">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      <svg fill="none" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
       Reimburse
     </a>
     <a class="sidebar-link" href="#">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <svg fill="none" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       Inbox
     </a>
     <a class="sidebar-link" href="#">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      Calendar
+      <svg fill="none" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Calender
     </a>
 
     <div class="sidebar-section-label">Preferences</div>
     <a class="sidebar-link" href="#">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
       Settings
     </a>
     <a class="sidebar-link" href="#">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      Help & Center
+      <svg fill="none" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Help &amp; Center
     </a>
 
     <div class="sidebar-bottom">
       <div class="dark-toggle">
-        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
         <span style="font-size:14px;font-weight:600">Dark Mode</span>
         <div class="toggle-track" style="margin-left:auto" onclick="toggleDark(this)">
           <div class="toggle-thumb"></div>
         </div>
       </div>
-      <a class="sidebar-link" href="home.html">
-        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      <a class="sidebar-link" href="/home.html">
+        <svg fill="none" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
         Log Out
       </a>
     </div>
   </aside>
 
+  <!-- ── MAIN ── -->
   <div class="dashboard-main">
-    <div class="stats-row" id="statsRow">
-      <div class="stat-card"><div class="stat-label">Total Cars</div><div class="stat-value" id="statCars">–</div></div>
-      <div class="stat-card"><div class="stat-label">Total Rentals</div><div class="stat-value" id="statRentals">–</div></div>
-      <div class="stat-card"><div class="stat-label">Total Revenue</div><div class="stat-value" id="statRevenue">–</div><div class="stat-sub">All time</div></div>
-    </div>
-
     <div class="dashboard-grid">
+
+      <!-- LEFT: Details Rental -->
       <div class="dash-card">
         <div class="dash-card-title">Details Rental</div>
+
+        <!-- Map illustration -->
         <div class="map-placeholder">
-          <svg viewBox="0 0 600 220" xmlns="http://www.w3.org/2000/svg">
-            <rect width="600" height="220" fill="#e8f0fe"/>
-            <rect x="0" y="80" width="600" height="14" fill="#c8d8f8" rx="2"/>
-            <rect x="0" y="130" width="600" height="14" fill="#c8d8f8" rx="2"/>
-            <rect x="100" y="0" width="14" height="220" fill="#c8d8f8" rx="2"/>
-            <rect x="250" y="0" width="14" height="220" fill="#c8d8f8" rx="2"/>
-            <rect x="400" y="0" width="14" height="220" fill="#c8d8f8" rx="2"/>
-            <rect x="20" y="20" width="70" height="55" fill="#b8ccf4" rx="4"/>
-            <rect x="120" y="20" width="120" height="55" fill="#b8ccf4" rx="4"/>
-            <rect x="270" y="20" width="120" height="55" fill="#b8ccf4" rx="4"/>
-            <rect x="420" y="20" width="160" height="55" fill="#b8ccf4" rx="4"/>
-            <rect x="20" y="150" width="70" height="55" fill="#b8ccf4" rx="4"/>
-            <rect x="120" y="150" width="120" height="55" fill="#b8ccf4" rx="4"/>
-            <rect x="270" y="150" width="120" height="55" fill="#b8ccf4" rx="4"/>
-            <rect x="420" y="150" width="160" height="55" fill="#b8ccf4" rx="4"/>
-            <polyline points="50,210 50,87 330,87 330,50" stroke="#3563E9" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="330" cy="45" r="12" fill="#3563E9"/>
-            <circle cx="330" cy="45" r="5" fill="white"/>
+          <svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+            <rect width="560" height="220" fill="#e8f0fe"/>
+            <!-- grid lines -->
+            <line x1="0" y1="75"  x2="560" y2="75"  stroke="#c8d8f8" stroke-width="12"/>
+            <line x1="0" y1="145" x2="560" y2="145" stroke="#c8d8f8" stroke-width="12"/>
+            <line x1="90"  y1="0" x2="90"  y2="220" stroke="#c8d8f8" stroke-width="12"/>
+            <line x1="230" y1="0" x2="230" y2="220" stroke="#c8d8f8" stroke-width="12"/>
+            <line x1="370" y1="0" x2="370" y2="220" stroke="#c8d8f8" stroke-width="12"/>
+            <!-- blocks -->
+            <rect x="10"  y="10"  width="70"  height="56" fill="#b8ccf4" rx="4"/>
+            <rect x="100" y="10"  width="120" height="56" fill="#b8ccf4" rx="4"/>
+            <rect x="240" y="10"  width="120" height="56" fill="#b8ccf4" rx="4"/>
+            <rect x="380" y="10"  width="170" height="56" fill="#b8ccf4" rx="4"/>
+            <rect x="10"  y="154" width="70"  height="56" fill="#b8ccf4" rx="4"/>
+            <rect x="100" y="154" width="120" height="56" fill="#b8ccf4" rx="4"/>
+            <rect x="240" y="154" width="120" height="56" fill="#b8ccf4" rx="4"/>
+            <rect x="380" y="154" width="170" height="56" fill="#b8ccf4" rx="4"/>
+            <!-- route -->
+            <polyline points="45,210 45,81 310,81 310,40"
+              stroke="#3563E9" stroke-width="3" fill="none"
+              stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- pin -->
+            <circle cx="310" cy="34" r="14" fill="#3563E9"/>
+            <circle cx="310" cy="34" r="6"  fill="white"/>
           </svg>
         </div>
+
+        <!-- Car info + booking detail (injected by JS) -->
         <div id="detailRental">
-          <div style="text-align:center;padding:20px 0"><div class="spinner"></div></div>
+          <div style="text-align:center;padding:40px 0"><div class="spinner"></div></div>
         </div>
       </div>
 
+      <!-- RIGHT column -->
       <div style="display:flex;flex-direction:column;gap:24px">
+
+        <!-- Top 5 Car Rental -->
         <div class="dash-card">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-            <div class="dash-card-title" style="margin:0">Top 5 Car Rental</div>
-            <button style="background:none;border:none;color:var(--text-secondary);font-size:20px;cursor:pointer">⋯</button>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+            <div style="font-size:16px;font-weight:800;color:var(--text-primary)">Top 5 Car Rental</div>
+            <button style="background:none;border:none;color:var(--text-secondary);font-size:18px;cursor:pointer;line-height:1;letter-spacing:2px">•••</button>
           </div>
           <div class="donut-wrap">
             <div class="donut-chart">
-              <svg width="180" height="180" viewBox="0 0 180 180">
-                <circle cx="90" cy="90" r="70" fill="none" stroke="#1A3A8F" stroke-width="28" stroke-dasharray="155 285" stroke-dashoffset="0"/>
-                <circle cx="90" cy="90" r="70" fill="none" stroke="#3563E9" stroke-width="28" stroke-dasharray="90 350" stroke-dashoffset="-155"/>
-                <circle cx="90" cy="90" r="70" fill="none" stroke="#54A6FF" stroke-width="28" stroke-dasharray="80 360" stroke-dashoffset="-245"/>
-                <circle cx="90" cy="90" r="70" fill="none" stroke="#90CBF9" stroke-width="28" stroke-dasharray="40 400" stroke-dashoffset="-325"/>
-                <circle cx="90" cy="90" r="70" fill="none" stroke="#C8E6FF" stroke-width="28" stroke-dasharray="75 365" stroke-dashoffset="-365"/>
+              <svg width="160" height="160" viewBox="0 0 160 160">
+                <circle cx="80" cy="80" r="58" fill="none" stroke="#1A3A8F" stroke-width="22" stroke-dasharray="129 235" stroke-dashoffset="0"/>
+                <circle cx="80" cy="80" r="58" fill="none" stroke="#3563E9" stroke-width="22" stroke-dasharray="70 294"  stroke-dashoffset="-131"/>
+                <circle cx="80" cy="80" r="58" fill="none" stroke="#54A6FF" stroke-width="22" stroke-dasharray="68 296"  stroke-dashoffset="-203"/>
+                <circle cx="80" cy="80" r="58" fill="none" stroke="#90CBF9" stroke-width="22" stroke-dasharray="36 328"  stroke-dashoffset="-273"/>
+                <circle cx="80" cy="80" r="58" fill="none" stroke="#C8E6FF" stroke-width="22" stroke-dasharray="61 303"  stroke-dashoffset="-311"/>
               </svg>
               <div class="donut-center">
                 <span class="num" id="donutTotal">72,030</span>
-                <span class="label">Rental Car</span>
+                <span class="lbl">Rental Car</span>
               </div>
             </div>
             <div class="donut-legend">
-              <div class="legend-item"><div class="legend-dot" style="background:#1A3A8F"></div><span class="legend-name">Sport Car</span><span class="legend-count">17,439</span></div>
-              <div class="legend-item"><div class="legend-dot" style="background:#3563E9"></div><span class="legend-name">SUV</span><span class="legend-count">9,478</span></div>
-              <div class="legend-item"><div class="legend-dot" style="background:#54A6FF"></div><span class="legend-name">Coupe</span><span class="legend-count">18,197</span></div>
-              <div class="legend-item"><div class="legend-dot" style="background:#90CBF9"></div><span class="legend-name">Hatchback</span><span class="legend-count">12,510</span></div>
-              <div class="legend-item"><div class="legend-dot" style="background:#C8E6FF"></div><span class="legend-name">MPV</span><span class="legend-count">14,406</span></div>
+              <div class="legend-item">
+                <div class="legend-dot" style="background:#1A3A8F"></div>
+                <span class="legend-name">Sport Car</span>
+                <span class="legend-count">17,439</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-dot" style="background:#3563E9"></div>
+                <span class="legend-name">SUV</span>
+                <span class="legend-count">9,478</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-dot" style="background:#54A6FF"></div>
+                <span class="legend-name">Coupe</span>
+                <span class="legend-count">18,197</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-dot" style="background:#90CBF9"></div>
+                <span class="legend-name">Hatchback</span>
+                <span class="legend-count">12,510</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-dot" style="background:#C8E6FF"></div>
+                <span class="legend-name">MPV</span>
+                <span class="legend-count">14,406</span>
+              </div>
             </div>
           </div>
         </div>
 
+        <!-- Recent Transaction -->
         <div class="dash-card">
           <div class="tx-header">
             <h3>Recent Transaction</h3>
-            <a href="category.html" class="view-all">View All</a>
+            <a href="/category.html" class="view-all">View All</a>
           </div>
           <div id="recentTx">
             <div class="spinner"></div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-</div>
+
+      </div><!-- /right column -->
+    </div><!-- /dashboard-grid -->
+  </div><!-- /dashboard-main -->
+</div><!-- /app -->
 
 <div class="toast" id="toast"></div>
 <script src="/static/js/navbar.js"></script>

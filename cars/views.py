@@ -78,39 +78,43 @@ class RentalViewSet(viewsets.ModelViewSet):
 
 @api_view(['GET'])
 def dashboard(request):
+    try:
+        total_cars = Car.objects.count()
+        total_rentals = Rental.objects.count()
+        revenue = Rental.objects.aggregate(
+            Sum('total_price')
+        )['total_price__sum'] or 0
 
-    total_cars = Car.objects.count()
-    total_rentals = Rental.objects.count()
-    revenue = Rental.objects.aggregate(
-        Sum('total_price')
-    )['total_price__sum'] or 0
+        recent_rentals = Rental.objects.select_related('car').order_by('-created_at')[:5]
 
-    recent_rentals = Rental.objects.order_by('-created_at')[:5]
+        rentals_data = []
+        for rental in recent_rentals:
+            rentals_data.append({
+                "customer":         rental.full_name,
+                "car":              rental.car.name,
+                "car_type":         rental.car.type,
+                "image":            request.build_absolute_uri(rental.car.image.url) if rental.car.image else None,
+                "total":            str(rental.total_price),
+                "pickup":           str(rental.pickup_date),
+                "dropoff":          str(rental.dropoff_date),
+                "pickup_location":  rental.pickup_location,
+                "dropoff_location": rental.dropoff_location,
+                "pickup_time":      str(rental.pickup_time),
+                "dropoff_time":     str(rental.dropoff_time),
+            })
 
-    rentals_data = []
-
-    for rental in recent_rentals:
-        rentals_data.append({
-            "customer":      rental.full_name,
-            "car":           rental.car.name,
-            "car_type":      rental.car.type,
-            "image":         request.build_absolute_uri(rental.car.image.url) if rental.car.image else None,
-            "total":         rental.total_price,
-            "pickup":        rental.pickup_date,
-            "dropoff":       rental.dropoff_date,
-            "pickup_location":  rental.pickup_location,
-            "dropoff_location": rental.dropoff_location,
-            "pickup_time":   str(rental.pickup_time),
-            "dropoff_time":  str(rental.dropoff_time),
+        return Response({
+            "total_cars":     total_cars,
+            "total_rentals":  total_rentals,
+            "revenue":        str(revenue),
+            "recent_rentals": rentals_data,
         })
 
-    return Response({
-        "total_cars":     total_cars,
-        "total_rentals":  total_rentals,
-        "revenue":        revenue,
-        "recent_rentals": rentals_data
-    })
-
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return Response({"error": str(e)}, status=500)
+    
 @api_view(['GET'])
 def car_counts(request):
     from django.db.models import Count

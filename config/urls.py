@@ -14,5 +14,5 @@ urlpatterns = [
     path('detail.html', TemplateView.as_view(template_name='detail.html')),
     path('payment.html', TemplateView.as_view(template_name='payment.html')),
     path('dashboard.html', TemplateView.as_view(template_name='dashboard.html')),
-
+    path('dashboard/', TemplateView.as_view(template_name='dashboard.html')),  
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

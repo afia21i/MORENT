@@ -14,7 +14,17 @@ function toggleDark(track) {
 
 function capitalize(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
 
-// ── RECENT TRANSACTIONS ──────────────────────────────────────────────
+function formatDate(val) {
+  if (!val) return '–';
+  const d = new Date(val);
+  return isNaN(d) ? val : d.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+function formatTime(val) {
+  if (!val) return '–';
+  return val.slice(0, 5);
+}
+
 function renderTransactions(rentals) {
   const container = document.getElementById('recentTx');
   if (!rentals.length) {
@@ -31,7 +41,7 @@ function renderTransactions(rentals) {
     return `
       <div class="tx-item">
         <div class="tx-car-img">${imgHtml}</div>
-        <div>
+        <div style="flex:1;min-width:0">
           <div class="tx-name">${r.car || 'Unknown Car'}</div>
           <div class="tx-type">${capitalize(r.car_type) || 'Sport Car'}</div>
         </div>
@@ -41,78 +51,51 @@ function renderTransactions(rentals) {
   }).join('');
 }
 
-// ── LATEST RENTAL DETAIL ──────────────────────────────────────────────
 function renderDetailRental(rentals) {
   const container = document.getElementById('detailRental');
   if (!rentals.length) {
-    container.innerHTML = `<div style="text-align:center;color:var(--text-secondary);padding:24px">
-      No rentals yet. <a href="category.html" style="color:var(--blue)">Rent a car!</a>
-    </div>`;
+    container.innerHTML = `
+      <div style="text-align:center;color:var(--text-secondary);padding:40px 0">
+        No rentals yet. <a href="/category.html" style="color:var(--blue);font-weight:600">Rent a car!</a>
+      </div>`;
     return;
   }
+
   const r = rentals[0];
   const imgHtml = r.image
     ? `<img src="${r.image}" alt="${r.car}" style="width:72px;height:56px;object-fit:contain;" onerror="this.parentElement.innerHTML='🚗'" />`
     : '🚗';
-  const randomId = '#' + String(Math.floor(Math.random() * 9000 + 1000));
+  const bookingId = '#' + String(Math.floor(Math.random() * 9000 + 1000));
+
+  function fieldBox(value) {
+    return `<div class="field-value">${value}<span class="field-chevron">▾</span></div>`;
+  }
 
   container.innerHTML = `
     <div class="map-car-info">
       <div class="map-car-img">${imgHtml}</div>
-      <div>
+      <div style="flex:1;min-width:0">
         <div class="map-car-name">${r.car || 'Car'}</div>
         <div class="map-car-type">${capitalize(r.car_type) || 'Sport Car'}</div>
       </div>
-      <div class="map-car-id">${randomId}</div>
+      <div class="map-car-id">${bookingId}</div>
     </div>
     <div class="booking-info">
       <div class="pickup-dropoff">
         <div>
-          <div class="booking-dot-row"><span class="dot"></span> Pick – Up</div>
+          <div class="booking-dot-row"><span class="dot-blue"></span> Pick – Up</div>
           <div class="booking-fields-inline">
-            <div class="booking-field-sm">
-              <label>Locations</label>
-              <select style="width:100%;padding:8px;border:1px solid var(--border-light);border-radius:8px;font-size:13px;font-weight:600;background:var(--bg)">
-                <option>${r.pickup_location || 'N/A'}</option>
-              </select>
-            </div>
-            <div class="booking-field-sm">
-              <label>Date</label>
-              <select style="width:100%;padding:8px;border:1px solid var(--border-light);border-radius:8px;font-size:13px;font-weight:600;background:var(--bg)">
-                <option>${r.pickup || '–'}</option>
-              </select>
-            </div>
-            <div class="booking-field-sm">
-              <label>Time</label>
-              <select style="width:100%;padding:8px;border:1px solid var(--border-light);border-radius:8px;font-size:13px;font-weight:600;background:var(--bg)">
-                <option>${r.pickup_time || '–'}</option>
-              </select>
-            </div>
+            <div class="booking-field-sm"><label>Locations</label>${fieldBox(r.pickup_location || 'N/A')}</div>
+            <div class="booking-field-sm"><label>Date</label>${fieldBox(formatDate(r.pickup))}</div>
+            <div class="booking-field-sm"><label>Time</label>${fieldBox(formatTime(r.pickup_time))}</div>
           </div>
         </div>
         <div>
-          <div class="booking-dot-row">
-            <span class="dot" style="background:#90A3BF;border-color:#90A3BF;box-shadow:none"></span> Drop – Off
-          </div>
+          <div class="booking-dot-row"><span class="dot-grey"></span> Drop – Off</div>
           <div class="booking-fields-inline">
-            <div class="booking-field-sm">
-              <label>Locations</label>
-              <select style="width:100%;padding:8px;border:1px solid var(--border-light);border-radius:8px;font-size:13px;font-weight:600;background:var(--bg)">
-                <option>${r.dropoff_location || 'N/A'}</option>
-              </select>
-            </div>
-            <div class="booking-field-sm">
-              <label>Date</label>
-              <select style="width:100%;padding:8px;border:1px solid var(--border-light);border-radius:8px;font-size:13px;font-weight:600;background:var(--bg)">
-                <option>${r.dropoff || '–'}</option>
-              </select>
-            </div>
-            <div class="booking-field-sm">
-              <label>Time</label>
-              <select style="width:100%;padding:8px;border:1px solid var(--border-light);border-radius:8px;font-size:13px;font-weight:600;background:var(--bg)">
-                <option>${r.dropoff_time || '–'}</option>
-              </select>
-            </div>
+            <div class="booking-field-sm"><label>Locations</label>${fieldBox(r.dropoff_location || 'N/A')}</div>
+            <div class="booking-field-sm"><label>Date</label>${fieldBox(formatDate(r.dropoff))}</div>
+            <div class="booking-field-sm"><label>Time</label>${fieldBox(formatTime(r.dropoff_time))}</div>
           </div>
         </div>
       </div>
@@ -126,51 +109,35 @@ function renderDetailRental(rentals) {
     </div>`;
 }
 
-// ── FETCH DASHBOARD ──────────────────────────────────────────────
 async function loadDashboard() {
   try {
     const res = await fetch(`${API}/dashboard/`);
     if (!res.ok) throw new Error('Dashboard API error');
     const data = await res.json();
 
-    document.getElementById('statCars').textContent    = data.total_cars ?? '–';
-    document.getElementById('statRentals').textContent = data.total_rentals ?? '–';
-    document.getElementById('statRevenue').textContent =
-      data.revenue != null ? `$${parseFloat(data.revenue).toFixed(2)}` : '$0.00';
-    document.getElementById('donutTotal').textContent  =
-      (data.total_rentals || 0).toLocaleString();
+    const donutEl = document.getElementById('donutTotal');
+    if (donutEl) donutEl.textContent = (data.total_rentals || 0).toLocaleString();
 
     const rentals = (data.recent_rentals || []).map(r => ({
-      car:              r.car,
-      car_type:         r.car_type,
-      image:            r.image,
-      total:            r.total,
-      pickup:           r.pickup,
-      dropoff:          r.dropoff,
-      pickup_location:  r.pickup_location,
-      dropoff_location: r.dropoff_location,
-      pickup_time:      r.pickup_time,
-      dropoff_time:     r.dropoff_time,
-      customer:         r.customer,
+      car: r.car, car_type: r.car_type, image: r.image,
+      total: r.total, pickup: r.pickup, dropoff: r.dropoff,
+      pickup_location: r.pickup_location, dropoff_location: r.dropoff_location,
+      pickup_time: r.pickup_time, dropoff_time: r.dropoff_time,
+      customer: r.customer,
     }));
 
     renderTransactions(rentals);
     renderDetailRental(rentals);
 
   } catch (err) {
-    console.error(err);
-    document.getElementById('recentTx').innerHTML = `
-      <div style="text-align:center;color:var(--text-secondary);padding:24px">
-        <p>Could not load transactions</p>
+    console.error('Dashboard error:', err);
+    document.getElementById('recentTx').innerHTML =
+      `<div style="text-align:center;color:var(--text-secondary);padding:24px">Could not load transactions.</div>`;
+    document.getElementById('detailRental').innerHTML =
+      `<div style="text-align:center;color:var(--text-secondary);padding:40px 0">
+        No rental data available.
+        <a href="/category.html" style="color:var(--blue);font-weight:600">Browse &amp; Rent a Car →</a>
       </div>`;
-    document.getElementById('detailRental').innerHTML = `
-      <div style="text-align:center;color:var(--text-secondary);padding:24px">
-        <p>No rental data available</p>
-        <a href="category.html" style="color:var(--blue);font-weight:600">Browse & Rent a Car →</a>
-      </div>`;
-    document.getElementById('statCars').textContent    = '–';
-    document.getElementById('statRentals').textContent = '–';
-    document.getElementById('statRevenue').textContent = '$0.00';
   }
 }
 
