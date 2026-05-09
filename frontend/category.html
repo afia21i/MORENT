@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MORENT – Browse Cars</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+  <style>
+    .layout { display: flex; min-height: calc(100vh - 72px); }
+
+    .sidebar {
+      width: 260px;
+      flex-shrink: 0;
+      padding: 32px 20px;
+      background: var(--white);
+      border-right: 1px solid var(--border-light);
+    }
+    .filter-section { margin-bottom: 32px; }
+    .filter-title {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--text-secondary); margin-bottom: 16px;
+    }
+    .filter-item { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; cursor: pointer; }
+    .filter-item input[type="checkbox"] {
+      width: 18px; height: 18px; accent-color: var(--blue); cursor: pointer; flex-shrink: 0;
+    }
+    .filter-item label { font-size: 14px; font-weight: 600; color: var(--text-primary); cursor: pointer; }
+    .filter-item .count { color: var(--text-secondary); font-weight: 500; margin-left: auto; }
+
+    .price-slider { width: 100%; accent-color: var(--blue); cursor: pointer; }
+    .price-value { font-size: 14px; font-weight: 700; color: var(--text-primary); margin-top: 8px; }
+
+    .main-content { flex: 1; padding: 24px; }
+
+    .cars-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+    .show-more-row { display: flex; justify-content: center; align-items: center; margin-top: 36px; gap: 24px; }
+    .car-count { font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+
+    input[type="date"].booking-select {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 100%;
+      padding: 8px 12px;
+      border: none;
+      border-bottom: 1px solid var(--border-light);
+      background: transparent;
+      font-size: 12px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-family: inherit;
+    }
+    input[type="date"].booking-select:focus {
+      outline: none;
+      border-bottom-color: var(--blue);
+    }
+  </style>
+</head>
+<body>
+
+<div id="navbar-placeholder"></div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="filter-section">
+      <div class="filter-title">Type</div>
+      <div class="filter-item"><input type="checkbox" id="t-sport" value="sport" onchange="applyFilters()" /><label for="t-sport">Sport</label><span class="count">(10)</span></div>
+      <div class="filter-item"><input type="checkbox" id="t-suv" value="suv" onchange="applyFilters()" /><label for="t-suv">SUV</label><span class="count">(12)</span></div>
+      <div class="filter-item"><input type="checkbox" id="t-mpv" value="mpv" onchange="applyFilters()" /><label for="t-mpv">MPV</label><span class="count">(16)</span></div>
+      <div class="filter-item"><input type="checkbox" id="t-sedan" value="sedan" onchange="applyFilters()" /><label for="t-sedan">Sedan</label><span class="count">(20)</span></div>
+      <div class="filter-item"><input type="checkbox" id="t-coupe" value="coupe" onchange="applyFilters()" /><label for="t-coupe">Coupe</label><span class="count">(14)</span></div>
+      <div class="filter-item"><input type="checkbox" id="t-hatchback" value="hatchback" onchange="applyFilters()" /><label for="t-hatchback">Hatchback</label><span class="count">(14)</span></div>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-title">Capacity</div>
+      <div class="filter-item"><input type="checkbox" id="s-2" value="2" onchange="applyFilters()" /><label for="s-2">2 Person</label><span class="count">(10)</span></div>
+      <div class="filter-item"><input type="checkbox" id="s-4" value="4" onchange="applyFilters()" /><label for="s-4">4 Person</label><span class="count">(14)</span></div>
+      <div class="filter-item"><input type="checkbox" id="s-6" value="6" onchange="applyFilters()" /><label for="s-6">6 Person</label><span class="count">(12)</span></div>
+      <div class="filter-item"><input type="checkbox" id="s-8" value="8" onchange="applyFilters()" /><label for="s-8">8 or More</label><span class="count">(16)</span></div>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-title">Price</div>
+      <input type="range" class="price-slider" id="priceSlider" min="0" max="500" value="100" step="5" oninput="updatePrice(this)" />
+      <div class="price-value">Max. $<span id="priceDisplay">100.00</span></div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <div style="padding: 0 0 24px;">
+      <div class="booking-bar">
+        <div class="booking-card">
+          <div class="booking-label"><span class="dot"></span> Pick – Up</div>
+          <div class="booking-fields">
+            <div class="booking-field">
+              <label>Locations</label>
+              <div class="booking-select-wrap">
+                <select class="booking-select" id="pickup_location">
+                  <option value="">Select your city</option>
+                  <option>Dhaka</option><option>Chittagong</option>
+                  <option>Khulna</option><option>Cumilla</option><option>Jessore</option>
+                </select>
+                <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+            </div>
+            <div class="booking-field">
+              <label>Date</label>
+              <input type="date" class="booking-select" id="pickup_date" />
+            </div>
+            <div class="booking-field">
+              <label>Time</label>
+              <div class="booking-select-wrap">
+                <select class="booking-select" id="pickup_time">
+                  <option value="">Select your time</option>
+                  <option>07:00</option><option>08:00</option><option>09:00</option>
+                  <option>10:00</option><option>12:00</option><option>14:00</option>
+                </select>
+                <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="booking-divider" onclick="swapBooking()" title="Swap locations">
+          <svg width="20" height="20" fill="none" stroke="#fff" stroke-width="2.5"
+               stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M7 16V4m0 0L3 8m4-4 4 4"/>
+            <path d="M17 8v12m0 0 4-4m-4 4-4-4"/>
+          </svg>
+        </button>
+
+        <div class="booking-card">
+          <div class="booking-label"><span class="dot" style="border-color:#90A3BF"></span> Drop – Off</div>
+          <div class="booking-fields">
+            <div class="booking-field">
+              <label>Locations</label>
+              <div class="booking-select-wrap">
+                <select class="booking-select" id="dropoff_location">
+                  <option value="">Select your city</option>
+                  <option>Dhaka</option><option>Chittagong</option>
+                  <option>Khulna</option><option>Cumilla</option><option>Jessore</option>
+                </select>
+                <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+            </div>
+            <div class="booking-field">
+              <label>Date</label>
+              <input type="date" class="booking-select" id="dropoff_date" />
+            </div>
+            <div class="booking-field">
+              <label>Time</label>
+              <div class="booking-select-wrap">
+                <select class="booking-select" id="dropoff_time">
+                  <option value="">Select your time</option>
+                  <option>07:00</option><option>08:00</option><option>09:00</option>
+                  <option>10:00</option><option>12:00</option><option>14:00</option>
+                </select>
+                <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cars-grid-3" id="carsGrid">
+      <div class="spinner"></div>
+    </div>
+
+    <div class="show-more-row">
+      <button class="btn btn-primary" id="showMoreBtn" onclick="loadMore()" style="display:none">Show more car</button>
+      <span class="car-count" id="carCount"></span>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-top">
+    <div class="footer-brand"><div class="logo">MORENT</div><p>Our vision is to provide convenience and help increase your sales business.</p></div>
+    <div class="footer-links">
+      <div class="footer-col"><h4>About</h4><ul><li><a href="#">How it works</a></li><li><a href="#">Featured</a></li><li><a href="#">Partnership</a></li><li><a href="#">Business Relation</a></li></ul></div>
+      <div class="footer-col"><h4>Community</h4><ul><li><a href="#">Events</a></li><li><a href="#">Blog</a></li><li><a href="#">Podcast</a></li><li><a href="#">Invite a friend</a></li></ul></div>
+      <div class="footer-col"><h4>Socials</h4><ul><li><a href="#">Discord</a></li><li><a href="#">Instagram</a></li><li><a href="#">Twitter</a></li><li><a href="#">Facebook</a></li></ul></div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>©2022 MORENT. All rights reserved</p>
+    <div class="footer-bottom-links"><a href="#">Privacy &amp; Policy</a><a href="#">Terms &amp; Condition</a></div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+<script src="/static/js/navbar.js"></script>
+<script src="/static/js/category.js"></script>
+</body>
+</html>

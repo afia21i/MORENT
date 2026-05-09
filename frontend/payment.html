@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MORENT – Payment</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+  <style>
+    main { padding: 32px; display: grid; grid-template-columns: 1fr 380px; gap: 24px; max-width: 1200px; margin: 0 auto; }
+
+    .form-section {
+      background: var(--white); border-radius: var(--radius-xl);
+      padding: 28px; margin-bottom: 20px;
+    }
+    .section-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+    .section-head-left h3 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+    .section-head-left p { font-size: 13px; color: var(--text-secondary); }
+    .step-badge { font-size: 12px; font-weight: 600; color: var(--text-secondary); }
+
+    .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .input-group { display: flex; flex-direction: column; gap: 6px; }
+    .input-group.full { grid-column: 1/-1; }
+    .input-group label { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+    .input-group input, .input-group select {
+      padding: 14px 16px; border-radius: var(--radius);
+      border: 1px solid var(--border-light); background: var(--bg);
+      font-size: 14px; color: var(--text-primary);
+      transition: border-color 0.2s;
+    }
+    .input-group input:focus, .input-group select:focus { border-color: var(--blue); background: var(--white); }
+    .input-group input::placeholder { color: var(--text-secondary); }
+
+    .radio-option {
+      border: 1.5px solid var(--border-light); border-radius: var(--radius);
+      padding: 16px 20px; margin-bottom: 12px; cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .radio-option.active { border-color: var(--blue); background: #F0F5FF; }
+    .radio-option-header { display: flex; align-items: center; justify-content: space-between; }
+    .radio-label { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 700; }
+    .radio-dot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--border); transition: border-color 0.2s; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .radio-dot.active { border-color: var(--blue); }
+    .radio-dot.active::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--blue); }
+    .card-fields { margin-top: 16px; }
+    .payment-logo { height: 24px; }
+
+    .check-row {
+      display: flex; align-items: flex-start; gap: 12px; padding: 16px 20px;
+      border: 1.5px solid var(--border-light); border-radius: var(--radius);
+      margin-bottom: 12px; cursor: pointer; transition: border-color 0.2s;
+    }
+    .check-row:hover { border-color: var(--blue); }
+    .check-row input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--blue); flex-shrink: 0; margin-top: 1px; cursor: pointer; }
+    .check-row label { font-size: 14px; font-weight: 500; color: var(--text-muted); cursor: pointer; line-height: 1.5; }
+
+    .security-note { display: flex; align-items: center; gap: 12px; margin-top: 16px; }
+    .security-note svg { color: var(--text-secondary); flex-shrink: 0; }
+    .security-note div h4 { font-size: 15px; font-weight: 700; }
+    .security-note div p { font-size: 12px; color: var(--text-secondary); }
+
+    .summary-panel { position: sticky; top: 88px; }
+    .summary-card { background: var(--white); border-radius: var(--radius-xl); padding: 28px; }
+    .summary-card h3 { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
+    .summary-card > p { font-size: 12px; color: var(--text-secondary); margin-bottom: 24px; }
+    .summary-car { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+    .summary-car-img { width: 80px; height: 64px; object-fit: contain; background: linear-gradient(135deg, #3563E9, #54A6FF); border-radius: var(--radius); padding: 8px; flex-shrink: 0; }
+    .summary-car-info h4 { font-size: 18px; font-weight: 800; }
+    .summary-car-info .stars { font-size: 13px; }
+    .summary-car-info .review { font-size: 12px; color: var(--text-secondary); }
+    .summary-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 15px; }
+    .summary-row .label { color: var(--text-muted); font-weight: 600; }
+    .summary-row .value { font-weight: 700; }
+    .promo-row { display: flex; gap: 8px; margin: 16px 0; }
+    .promo-row input { flex: 1; padding: 12px 16px; border: 1px solid var(--border-light); border-radius: var(--radius); font-size: 14px; }
+    .promo-row input::placeholder { color: var(--text-secondary); }
+    .promo-btn { padding: 12px 16px; background: var(--blue); color: #fff; border-radius: var(--radius); font-weight: 600; font-size: 14px; border: none; cursor: pointer; white-space: nowrap; }
+    .summary-divider { border: none; border-top: 1px solid var(--border-light); margin: 16px 0; }
+    .total-row { display: flex; justify-content: space-between; align-items: center; }
+    .total-label h4 { font-size: 16px; font-weight: 700; }
+    .total-label p { font-size: 12px; color: var(--text-secondary); }
+    .total-price { font-size: 28px; font-weight: 800; color: var(--text-primary); }
+  </style>
+</head>
+<body>
+
+<div id="navbar-placeholder"></div>
+
+<main>
+  <div>
+    <div class="form-section">
+      <div class="section-head">
+        <div class="section-head-left"><h3>Billing Info</h3><p>Please enter your billing info</p></div>
+        <span class="step-badge">Step 1 of 4</span>
+      </div>
+      <div class="input-grid">
+        <div class="input-group"><label>Name</label><input type="text" id="full_name" placeholder="Your name" /></div>
+        <div class="input-group"><label>Phone Number</label><input type="tel" id="phone" placeholder="Phone number" /></div>
+        <div class="input-group"><label>Address</label><input type="text" id="address" placeholder="Address" /></div>
+        <div class="input-group"><label>Town / City</label><input type="text" id="city" placeholder="Town or city" /></div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="section-head">
+        <div class="section-head-left"><h3>Rental Info</h3><p>Please select your rental date</p></div>
+        <span class="step-badge">Step 2 of 4</span>
+      </div>
+      <div class="booking-label" style="margin-bottom:16px"><span class="dot"></span> Pick – Up</div>
+      <div class="input-grid" style="margin-bottom:20px">
+        <div class="input-group">
+          <label>Locations</label>
+          <select id="pickup_location">
+            <option value="">Select your city</option>
+            <option>New York</option><option>Los Angeles</option><option>Chicago</option><option>Houston</option><option>Miami</option>
+          </select>
+        </div>
+        <div class="input-group"><label>Date</label><input type="date" id="pickup_date" /></div>
+        <div class="input-group full">
+          <label>Time</label>
+          <select id="pickup_time">
+            <option value="">Select your time</option>
+            <option value="07:00:00">07:00</option><option value="08:00:00">08:00</option>
+            <option value="09:00:00">09:00</option><option value="10:00:00">10:00</option>
+            <option value="12:00:00">12:00</option><option value="14:00:00">14:00</option>
+          </select>
+        </div>
+      </div>
+      <div class="booking-label" style="margin-bottom:16px"><span class="dot" style="border-color:#90A3BF"></span> Drop – Off</div>
+      <div class="input-grid">
+        <div class="input-group">
+          <label>Locations</label>
+          <select id="dropoff_location">
+            <option value="">Select your city</option>
+            <option>New York</option><option>Los Angeles</option><option>Chicago</option><option>Houston</option><option>Miami</option>
+          </select>
+        </div>
+        <div class="input-group"><label>Date</label><input type="date" id="dropoff_date" /></div>
+        <div class="input-group full">
+          <label>Time</label>
+          <select id="dropoff_time">
+            <option value="">Select your time</option>
+            <option value="07:00:00">07:00</option><option value="08:00:00">08:00</option>
+            <option value="09:00:00">09:00</option><option value="10:00:00">10:00</option>
+            <option value="12:00:00">12:00</option><option value="14:00:00">14:00</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="section-head">
+        <div class="section-head-left"><h3>Payment Method</h3><p>Please enter your payment method</p></div>
+        <span class="step-badge">Step 3 of 4</span>
+      </div>
+
+      <div class="radio-option active" id="opt-card" onclick="selectPayment('card')">
+        <div class="radio-option-header">
+          <div class="radio-label"><div class="radio-dot active" id="dot-card"></div>Credit Card</div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <svg height="24" viewBox="0 0 780 501" xmlns="http://www.w3.org/2000/svg"><rect width="780" height="501" rx="40" fill="#1434CB"/><text x="390" y="310" font-family="Arial" font-size="120" font-weight="bold" text-anchor="middle" fill="white">VISA</text></svg>
+            <svg height="24" viewBox="0 0 132 88" xmlns="http://www.w3.org/2000/svg"><rect width="56" height="88" rx="8" fill="#EB001B"/><rect x="76" width="56" height="88" rx="8" fill="#F79E1B"/><ellipse cx="66" cy="44" rx="22" ry="27" fill="#FF5F00"/></svg>
+          </div>
+        </div>
+        <div class="card-fields" id="card-fields">
+          <div class="input-grid">
+            <div class="input-group full"><label>Card Number</label><input type="text" id="card_number" placeholder="Card number" maxlength="19" oninput="formatCard(this)" /></div>
+            <div class="input-group"><label>Expiration Date</label><input type="text" id="card_expiry" placeholder="DD / MM / YY" maxlength="8" /></div>
+            <div class="input-group"><label>CVC</label><input type="text" id="card_cvc" placeholder="CVC" maxlength="3" /></div>
+            <div class="input-group full"><label>Card Holder</label><input type="text" id="card_holder" placeholder="Card holder name" /></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="radio-option" id="opt-paypal" onclick="selectPayment('paypal')">
+        <div class="radio-option-header">
+          <div class="radio-label"><div class="radio-dot" id="dot-paypal"></div>PayPal</div>
+          <svg height="24" viewBox="0 0 124 33" xmlns="http://www.w3.org/2000/svg"><text y="26" font-family="Arial" font-size="28" font-weight="bold" fill="#003087">Pay</text><text x="46" y="26" font-family="Arial" font-size="28" font-weight="bold" fill="#009CDE">Pal</text></svg>
+        </div>
+      </div>
+
+      <div class="radio-option" id="opt-bitcoin" onclick="selectPayment('bitcoin')">
+        <div class="radio-option-header">
+          <div class="radio-label"><div class="radio-dot" id="dot-bitcoin"></div>Bitcoin</div>
+          <svg height="24" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="50" fill="#F7931A"/><text x="50" y="68" font-family="Arial" font-size="52" font-weight="bold" text-anchor="middle" fill="white">₿</text></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="section-head">
+        <div class="section-head-left"><h3>Confirmation</h3><p>We are getting to the end. Just a few clicks and your rental is ready!</p></div>
+        <span class="step-badge">Step 4 of 4</span>
+      </div>
+      <div class="check-row">
+        <input type="checkbox" id="agree_marketing" />
+        <label for="agree_marketing">I agree with sending Marketing and newsletter emails. No spam, promised!</label>
+      </div>
+      <div class="check-row">
+        <input type="checkbox" id="agree_terms" />
+        <label for="agree_terms">I agree with our terms and conditions and privacy policy.</label>
+      </div>
+      <button class="btn btn-primary" style="margin-top:8px;width:auto" onclick="submitRental()">Rent Now</button>
+      <div class="security-note" style="margin-top:20px">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <div><h4>All your data are safe</h4><p>We are using the most advanced security to provide you the best experience ever.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="summary-panel">
+    <div class="summary-card">
+      <h3>Rental Summary</h3>
+      <p>Prices may change depending on the length of the rental and the price of your rental car.</p>
+      <div class="summary-car">
+        <div class="summary-car-img" id="summaryImg">🚗</div>
+        <div class="summary-car-info">
+          <h4 id="summaryCarName">Loading...</h4>
+          <div class="stars" id="summaryStars" style="color:#FBAD39">★★★★☆</div>
+          <span class="review" id="summaryReviews">440+ Reviewer</span>
+        </div>
+      </div>
+      <div class="summary-row"><span class="label">Subtotal</span><span class="value" id="summarySubtotal">$0.00</span></div>
+      <div class="summary-row"><span class="label">Tax (10%)</span><span class="value" id="summaryTax">$0</span></div>
+      <div class="promo-row">
+        <input type="text" id="promoCode" placeholder="Apply promo code" />
+        <button class="promo-btn" onclick="applyPromo()">Apply now</button>
+      </div>
+      <hr class="summary-divider" />
+      <div class="total-row">
+        <div class="total-label"><h4>Total Rental Price</h4><p>Overall price and includes rental discount</p></div>
+        <div class="total-price" id="summaryTotal">$0.00</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="footer-top">
+    <div class="footer-brand"><div class="logo">MORENT</div><p>Our vision is to provide convenience and help increase your sales business.</p></div>
+    <div class="footer-links">
+      <div class="footer-col"><h4>About</h4><ul><li><a href="#">How it works</a></li><li><a href="#">Featured</a></li><li><a href="#">Partnership</a></li><li><a href="#">Business Relation</a></li></ul></div>
+      <div class="footer-col"><h4>Community</h4><ul><li><a href="#">Events</a></li><li><a href="#">Blog</a></li><li><a href="#">Podcast</a></li><li><a href="#">Invite a friend</a></li></ul></div>
+      <div class="footer-col"><h4>Socials</h4><ul><li><a href="#">Discord</a></li><li><a href="#">Instagram</a></li><li><a href="#">Twitter</a></li><li><a href="#">Facebook</a></li></ul></div>
+    </div>
+  </div>
+  <div class="footer-bottom"><p>©2022 MORENT. All rights reserved</p><div class="footer-bottom-links"><a href="#">Privacy &amp; Policy</a><a href="#">Terms &amp; Condition</a></div></div>
+</footer>
+
+<div class="toast" id="toast"></div>
+<script src="/static/js/navbar.js"></script>
+<script src="/static/js/payment.js"></script>
+</body>
+</html>
