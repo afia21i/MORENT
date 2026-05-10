@@ -57,7 +57,7 @@ function renderDetail(car) {
           <div class="stars" style="color:#FBAD39;font-size:18px">${stars(ratingVal)}</div>
           <span class="review-count">${car.reviews || 0}+ Reviewer</span>
         </div>
-        <p class="car-desc">${car.description || 'A premium ' + capitalize(car.type) + ' car with exceptional performance, comfort, and style. Perfect for any occasion from business trips to weekend adventures.'}</p>
+        <p class="car-desc">${car.description || 'A premium ' + capitalize(car.type) + ' car with exceptional performance, comfort, and style.'}</p>
         <div class="specs-grid">
           <div class="spec-item"><span class="spec-label">Type Car</span><span class="spec-val">${capitalize(car.type)}</span></div>
           <div class="spec-item"><span class="spec-label">Capacity</span><span class="spec-val">${car.seats} People</span></div>
@@ -87,7 +87,7 @@ function toggleHeart(id) {
 
 function goPayment(id, name, price) {
   sessionStorage.setItem('booking', JSON.stringify({ car_id: id, car_name: name, price_per_day: price }));
-  window.location.href = `payment.html?car=${id}`;
+  window.location.href = `/payment/?car=${id}`;
 }
 
 function buildSmallCard(car) {
@@ -98,7 +98,7 @@ function buildSmallCard(car) {
     : `<div class="car-image-placeholder">🚗</div>`;
 
   return `
-    <div class="car-card" onclick="window.location='detail.html?id=${car.id}'" style="cursor:pointer">
+    <div class="car-card" onclick="window.location='/detail/?id=${car.id}'" style="cursor:pointer">
       <div class="car-card-header">
         <div><div class="car-name">${car.name}</div><div class="car-type">${capitalize(car.type)}</div></div>
         <button class="heart-btn ${liked?'liked':''}" onclick="event.stopPropagation();toggleLike(event,${car.id},this)">${heartIcon(liked)}</button>
@@ -146,7 +146,7 @@ async function init() {
     document.getElementById('detailContent').innerHTML = `
       <div class="empty-state">
         <h3>Car not found</h3>
-        <p><a href="category.html" style="color:var(--blue)">Back to Browse</a></p>
+        <p><a href="/category/" style="color:var(--blue)">Back to Browse</a></p>
       </div>`;
     console.error(err);
   }

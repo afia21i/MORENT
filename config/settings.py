@@ -59,8 +59,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # ← CHANGE 1: point Django to your frontend folder for HTML templates
-        'DIRS': [BASE_DIR / 'frontend'],
+        'DIRS': [BASE_DIR / 'frontend' / 'templates'],  # ← change this
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

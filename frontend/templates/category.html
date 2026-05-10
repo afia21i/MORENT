@@ -1,65 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MORENT – Browse Cars</title>
-  <link rel="stylesheet" href="/static/css/style.css" />
-  <style>
-    .layout { display: flex; min-height: calc(100vh - 72px); }
+{% extends 'base.html' %}
+{% load static %}
 
-    .sidebar {
-      width: 260px;
-      flex-shrink: 0;
-      padding: 32px 20px;
-      background: var(--white);
-      border-right: 1px solid var(--border-light);
-    }
-    .filter-section { margin-bottom: 32px; }
-    .filter-title {
-      font-size: 11px; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 1px; color: var(--text-secondary); margin-bottom: 16px;
-    }
-    .filter-item { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; cursor: pointer; }
-    .filter-item input[type="checkbox"] {
-      width: 18px; height: 18px; accent-color: var(--blue); cursor: pointer; flex-shrink: 0;
-    }
-    .filter-item label { font-size: 14px; font-weight: 600; color: var(--text-primary); cursor: pointer; }
-    .filter-item .count { color: var(--text-secondary); font-weight: 500; margin-left: auto; }
+{% block title %}MORENT – Browse Cars{% endblock %}
 
-    .price-slider { width: 100%; accent-color: var(--blue); cursor: pointer; }
-    .price-value { font-size: 14px; font-weight: 700; color: var(--text-primary); margin-top: 8px; }
+{% block extra_css %}
+<style>
+  .layout { display: flex; min-height: calc(100vh - 72px); }
+  .sidebar { width: 260px; flex-shrink: 0; padding: 32px 20px; background: var(--white); border-right: 1px solid var(--border-light); }
+  .filter-section { margin-bottom: 32px; }
+  .filter-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary); margin-bottom: 16px; }
+  .filter-item { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; cursor: pointer; }
+  .filter-item input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--blue); cursor: pointer; flex-shrink: 0; }
+  .filter-item label { font-size: 14px; font-weight: 600; color: var(--text-primary); cursor: pointer; }
+  .filter-item .count { color: var(--text-secondary); font-weight: 500; margin-left: auto; }
+  .price-slider { width: 100%; accent-color: var(--blue); cursor: pointer; }
+  .price-value { font-size: 14px; font-weight: 700; color: var(--text-primary); margin-top: 8px; }
+  .main-content { flex: 1; padding: 24px; }
+  .cars-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .show-more-row { display: flex; justify-content: center; align-items: center; margin-top: 36px; gap: 24px; }
+  .car-count { font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+</style>
+{% endblock %}
 
-    .main-content { flex: 1; padding: 24px; }
-
-    .cars-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-
-    .show-more-row { display: flex; justify-content: center; align-items: center; margin-top: 36px; gap: 24px; }
-    .car-count { font-size: 13px; font-weight: 600; color: var(--text-secondary); }
-
-    input[type="date"].booking-select {
-      appearance: none;
-      -webkit-appearance: none;
-      width: 100%;
-      padding: 8px 12px;
-      border: none;
-      border-bottom: 1px solid var(--border-light);
-      background: transparent;
-      font-size: 12px;
-      color: var(--text-secondary);
-      cursor: pointer;
-      font-family: inherit;
-    }
-    input[type="date"].booking-select:focus {
-      outline: none;
-      border-bottom-color: var(--blue);
-    }
-  </style>
-</head>
-<body>
-
-<div id="navbar-placeholder"></div>
-
+{% block content %}
 <div class="layout">
   <aside class="sidebar">
     <div class="filter-section">
@@ -71,7 +34,6 @@
       <div class="filter-item"><input type="checkbox" id="t-coupe" value="coupe" onchange="applyFilters()" /><label for="t-coupe">Coupe</label><span class="count">(14)</span></div>
       <div class="filter-item"><input type="checkbox" id="t-hatchback" value="hatchback" onchange="applyFilters()" /><label for="t-hatchback">Hatchback</label><span class="count">(14)</span></div>
     </div>
-
     <div class="filter-section">
       <div class="filter-title">Capacity</div>
       <div class="filter-item"><input type="checkbox" id="s-2" value="2" onchange="applyFilters()" /><label for="s-2">2 Person</label><span class="count">(10)</span></div>
@@ -79,7 +41,6 @@
       <div class="filter-item"><input type="checkbox" id="s-6" value="6" onchange="applyFilters()" /><label for="s-6">6 Person</label><span class="count">(12)</span></div>
       <div class="filter-item"><input type="checkbox" id="s-8" value="8" onchange="applyFilters()" /><label for="s-8">8 or More</label><span class="count">(16)</span></div>
     </div>
-
     <div class="filter-section">
       <div class="filter-title">Price</div>
       <input type="range" class="price-slider" id="priceSlider" min="0" max="500" value="100" step="5" oninput="updatePrice(this)" />
@@ -123,8 +84,7 @@
         </div>
 
         <button class="booking-divider" onclick="swapBooking()" title="Swap locations">
-          <svg width="20" height="20" fill="none" stroke="#fff" stroke-width="2.5"
-               stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <svg width="20" height="20" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
             <path d="M7 16V4m0 0L3 8m4-4 4 4"/>
             <path d="M17 8v12m0 0 4-4m-4 4-4-4"/>
           </svg>
@@ -164,9 +124,7 @@
       </div>
     </div>
 
-    <div class="cars-grid-3" id="carsGrid">
-      <div class="spinner"></div>
-    </div>
+    <div class="cars-grid-3" id="carsGrid"><div class="spinner"></div></div>
 
     <div class="show-more-row">
       <button class="btn btn-primary" id="showMoreBtn" onclick="loadMore()" style="display:none">Show more car</button>
@@ -174,24 +132,8 @@
     </div>
   </div>
 </div>
+{% endblock %}
 
-<footer class="footer">
-  <div class="footer-top">
-    <div class="footer-brand"><div class="logo">MORENT</div><p>Our vision is to provide convenience and help increase your sales business.</p></div>
-    <div class="footer-links">
-      <div class="footer-col"><h4>About</h4><ul><li><a href="#">How it works</a></li><li><a href="#">Featured</a></li><li><a href="#">Partnership</a></li><li><a href="#">Business Relation</a></li></ul></div>
-      <div class="footer-col"><h4>Community</h4><ul><li><a href="#">Events</a></li><li><a href="#">Blog</a></li><li><a href="#">Podcast</a></li><li><a href="#">Invite a friend</a></li></ul></div>
-      <div class="footer-col"><h4>Socials</h4><ul><li><a href="#">Discord</a></li><li><a href="#">Instagram</a></li><li><a href="#">Twitter</a></li><li><a href="#">Facebook</a></li></ul></div>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <p>©2022 MORENT. All rights reserved</p>
-    <div class="footer-bottom-links"><a href="#">Privacy &amp; Policy</a><a href="#">Terms &amp; Condition</a></div>
-  </div>
-</footer>
-
-<div class="toast" id="toast"></div>
-<script src="/static/js/navbar.js"></script>
-<script src="/static/js/category.js"></script>
-</body>
-</html>
+{% block extra_js %}
+<script src="{% static 'js/category.js' %}"></script>
+{% endblock %}

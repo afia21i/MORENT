@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}MORENT – Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+  body { display: flex; flex-direction: column; min-height: 100vh; }
+  .app { display: flex; flex: 1; }
+  .sidebar { width: 240px; flex-shrink: 0; background: var(--white); border-right: 1px solid var(--border-light); padding: 32px 20px; display: flex; flex-direction: column; position: sticky; top: 72px; height: calc(100vh - 72px); overflow-y: auto; }
+  .sidebar-section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary); margin-bottom: 12px; margin-top: 24px; }
+  .sidebar-section-label:first-child { margin-top: 0; }
+  .sidebar-link { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: var(--radius); font-size: 15px; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: all 0.2s; margin-bottom: 4px; text-decoration: none; }
+  .sidebar-link:hover { background: var(--bg); color: var(--text-primary); }
+  .sidebar-link.active { background: var(--blue); color: var(--white); }
+  .sidebar-link svg { width: 20px; height: 20px; flex-shrink: 0; stroke: currentColor; }
+  .sidebar-bottom { margin-top: auto; padding-top: 24px; border-top: 1px solid var(--border-light); }
+  .toggle-track { width: 44px; height: 24px; background: var(--bg); border-radius: 12px; display: flex; align-items: center; padding: 3px; cursor: pointer; border: 1px solid var(--border); }
+  .toggle-thumb { width: 18px; height: 18px; border-radius: 50%; background: var(--blue); transition: transform 0.2s; }
+  .dashboard-main { flex: 1; padding: 28px; display: flex; flex-direction: column; gap: 24px; }
+  .dashboard-grid { display: grid; grid-template-columns: 1fr 380px; gap: 24px; }
+  .dash-card { background: var(--white); border-radius: var(--radius-xl); padding: 24px; box-shadow: var(--shadow-sm); }
+  .map-placeholder { background: linear-gradient(135deg, #e8f0fe 0%, #d0e2ff 100%); border-radius: var(--radius-lg); height: 220px; overflow: hidden; margin-bottom: 20px; }
+  .map-car-img { width: 80px; height: 64px; background: linear-gradient(135deg, #3563E9, #54A6FF); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0; overflow: hidden; }
+  .donut-wrap { display: flex; align-items: center; gap: 32px; }
+  .donut-chart { position: relative; width: 160px; height: 160px; flex-shrink: 0; }
+  .donut-chart svg { transform: rotate(-90deg); width: 160px; height: 160px; }
+  .donut-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .donut-center .num { font-size: 26px; font-weight: 800; }
+  .donut-center .lbl { font-size: 11px; color: var(--text-secondary); font-weight: 600; }
+  .donut-legend { display: flex; flex-direction: column; gap: 14px; flex: 1; }
+  .legend-item { display: flex; align-items: center; gap: 10px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .legend-name { font-size: 13px; font-weight: 600; color: var(--text-muted); flex: 1; }
+  .legend-count { font-size: 13px; font-weight: 700; }
+  .tx-item { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--border-light); }
+  .tx-item:last-child { border-bottom: none; }
+  .tx-car-img { width: 60px; height: 44px; background: var(--bg); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; overflow: hidden; }
+  .tx-name { font-size: 15px; font-weight: 700; }
+  .tx-type { font-size: 12px; color: var(--text-secondary); }
+  .tx-date { font-size: 12px; color: var(--text-secondary); margin-left: auto; }
+  .tx-price { font-size: 16px; font-weight: 800; min-width: 60px; text-align: right; }
+  .booking-dot-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 14px; font-weight: 700; }
+  .dot-blue { width: 12px; height: 12px; border-radius: 50%; background: var(--blue); border: 3px solid rgba(53,99,233,0.25); flex-shrink: 0; }
+  .dot-grey { width: 12px; height: 12px; border-radius: 50%; background: #90A3BF; border: 3px solid rgba(144,163,191,0.25); flex-shrink: 0; }
+  .pickup-dropoff { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .booking-fields-inline { display: flex; gap: 12px; }
+  .booking-field-sm { flex: 1; }
+  .booking-field-sm label { font-size: 11px; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px; }
+  .field-value { font-size: 13px; font-weight: 600; padding: 8px 10px; border: 1px solid var(--border-light); border-radius: 8px; background: var(--bg); display: flex; align-items: center; justify-content: space-between; }
+  .total-rental { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-light); padding-top: 20px; margin-top: 20px; }
+  .total-rental-price { font-size: 28px; font-weight: 800; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-section-label">Main Menu</div>
+    <a class="sidebar-link active" href="{% url 'dashboard' %}">
+      <svg fill="none" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </a>
+    <a class="sidebar-link" href="{% url 'category' %}">
+      <svg fill="none" stroke-width="2" viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3"/><rect x="9" y="11" width="14" height="10" rx="2"/></svg>
+      Car Rent
+    </a>
+    <a class="sidebar-link" href="#"><svg fill="none" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Insight</a>
+    <a class="sidebar-link" href="#"><svg fill="none" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>Reimburse</a>
+    <a class="sidebar-link" href="#"><svg fill="none" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Inbox</a>
+    <a class="sidebar-link" href="#"><svg fill="none" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Calendar</a>
+
+    <div class="sidebar-section-label">Preferences</div>
+    <a class="sidebar-link" href="#">Settings</a>
+    <a class="sidebar-link" href="#">Help &amp; Center</a>
+
+    <div class="sidebar-bottom">
+      <div style="display:flex;align-items:center;gap:10px;padding:12px 16px">
+        <span style="font-size:14px;font-weight:600">Dark Mode</span>
+        <div class="toggle-track" style="margin-left:auto" onclick="toggleDark(this)">
+          <div class="toggle-thumb"></div>
+        </div>
+      </div>
+      <a class="sidebar-link" href="{% url 'home' %}">
+        <svg fill="none" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Log Out
+      </a>
+    </div>
+  </aside>
+
+  <div class="dashboard-main">
+    <div class="dashboard-grid">
+      <div class="dash-card">
+        <div class="dash-card-title">Details Rental</div>
+        <div class="map-placeholder">
+          <svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+            <rect width="560" height="220" fill="#e8f0fe"/>
+            <line x1="0" y1="75"  x2="560" y2="75"  stroke="#c8d8f8" stroke-width="12"/>
+            <line x1="0" y1="145" x2="560" y2="145" stroke="#c8d8f8" stroke-width="12"/>
+            <line x1="90"  y1="0" x2="90"  y2="220" stroke="#c8d8f8" stroke-width="12"/>
+            <line x1="230" y1="0" x2="230" y2="220" stroke="#c8d8f8" stroke-width="12"/>
+            <line x1="370" y1="0" x2="370" y2="220" stroke="#c8d8f8" stroke-width="12"/>
+            <rect x="10"  y="10"  width="70"  height="56" fill="#b8ccf4" rx="4"/>
+            <rect x="100" y="10"  width="120" height="56" fill="#b8ccf4" rx="4"/>
+            <rect x="240" y="10"  width="120" height="56" fill="#b8ccf4" rx="4"/>
+            <rect x="380" y="10"  width="170" height="56" fill="#b8ccf4" rx="4"/>
+            <polyline points="45,210 45,81 310,81 310,40" stroke="#3563E9" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="310" cy="34" r="14" fill="#3563E9"/>
+            <circle cx="310" cy="34" r="6"  fill="white"/>
+          </svg>
+        </div>
+        <div id="detailRental"><div style="text-align:center;padding:40px 0"><div class="spinner"></div></div></div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:24px">
+        <div class="dash-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+            <div style="font-size:16px;font-weight:800">Top 5 Car Rental</div>
+          </div>
+          <div class="donut-wrap">
+            <div class="donut-chart">
+              <svg width="160" height="160" viewBox="0 0 160 160">
+                <circle cx="80" cy="80" r="58" fill="none" stroke="#1A3A8F" stroke-width="22" stroke-dasharray="129 235" stroke-dashoffset="0"/>
+                <circle cx="80" cy="80" r="58" fill="none" stroke="#3563E9" stroke-width="22" stroke-dasharray="70 294"  stroke-dashoffset="-131"/>
+                <circle cx="80" cy="80" r="58" fill="none" stroke="#54A6FF" stroke-width="22" stroke-dasharray="68 296"  stroke-dashoffset="-203"/>
+                <circle cx="80" cy="80" r="58" fill="none" stroke="#90CBF9" stroke-width="22" stroke-dasharray="36 328"  stroke-dashoffset="-273"/>
+                <circle cx="80" cy="80" r="58" fill="none" stroke="#C8E6FF" stroke-width="22" stroke-dasharray="61 303"  stroke-dashoffset="-311"/>
+              </svg>
+              <div class="donut-center">
+                <span class="num" id="donutTotal">0</span>
+                <span class="lbl">Rental Car</span>
+              </div>
+            </div>
+            <div class="donut-legend">
+              <div class="legend-item"><div class="legend-dot" style="background:#1A3A8F"></div><span class="legend-name">Sport Car</span><span class="legend-count">17,439</span></div>
+              <div class="legend-item"><div class="legend-dot" style="background:#3563E9"></div><span class="legend-name">SUV</span><span class="legend-count">9,478</span></div>
+              <div class="legend-item"><div class="legend-dot" style="background:#54A6FF"></div><span class="legend-name">Coupe</span><span class="legend-count">18,197</span></div>
+              <div class="legend-item"><div class="legend-dot" style="background:#90CBF9"></div><span class="legend-name">Hatchback</span><span class="legend-count">12,510</span></div>
+              <div class="legend-item"><div class="legend-dot" style="background:#C8E6FF"></div><span class="legend-name">MPV</span><span class="legend-count">14,406</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dash-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+            <h3 style="font-size:18px;font-weight:800">Recent Transaction</h3>
+            <a href="{% url 'category' %}" class="view-all">View All</a>
+          </div>
+          <div id="recentTx"><div class="spinner"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/dashboard.js' %}"></script>
+{% endblock %}

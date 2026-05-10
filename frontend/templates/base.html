@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}MORENT{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+{% include 'navbar.html' %}
+
+{% block content %}{% endblock %}
+
+<footer class="footer">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="logo">MORENT</div>
+      <p>Our vision is to provide convenience and help increase your sales business.</p>
+    </div>
+    <div class="footer-links">
+      <div class="footer-col"><h4>About</h4><ul><li><a href="#">How it works</a></li><li><a href="#">Featured</a></li></ul></div>
+      <div class="footer-col"><h4>Community</h4><ul><li><a href="#">Events</a></li><li><a href="#">Blog</a></li></ul></div>
+      <div class="footer-col"><h4>Socials</h4><ul><li><a href="#">Discord</a></li><li><a href="#">Instagram</a></li></ul></div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>©2022 MORENT. All rights reserved</p>
+    <div class="footer-bottom-links"><a href="#">Privacy &amp; Policy</a><a href="#">Terms &amp; Condition</a></div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

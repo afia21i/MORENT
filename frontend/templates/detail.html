@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}MORENT – Car Detail{% endblock %}
+
+{% block extra_css %}
+<style>
+  main { padding: 32px; max-width: 1200px; margin: 0 auto; }
+  .detail-layout { display: grid; grid-template-columns: 1fr 380px; gap: 24px; margin-bottom: 32px; }
+  .image-panel { background: var(--white); border-radius: var(--radius-xl); padding: 24px; }
+  .main-image-wrap { background: linear-gradient(135deg, #3563E9 0%, #54A6FF 100%); border-radius: var(--radius-lg); padding: 32px; margin-bottom: 16px; display: flex; align-items: center; justify-content: center; min-height: 260px; position: relative; overflow: hidden; }
+  .main-image-wrap img { width: 100%; max-height: 200px; object-fit: contain; position: relative; filter: drop-shadow(0 8px 24px rgba(0,0,0,0.3)); }
+  .main-image-wrap .car-caption { position: absolute; bottom: 16px; left: 24px; color: rgba(255,255,255,0.85); font-size: 13px; font-weight: 600; }
+  .thumbnail-row { display: flex; gap: 12px; }
+  .thumb { flex: 1; background: var(--bg); border-radius: var(--radius); padding: 12px; cursor: pointer; border: 2px solid transparent; transition: border-color 0.2s; display: flex; align-items: center; justify-content: center; min-height: 80px; }
+  .thumb.active { border-color: var(--blue); }
+  .thumb img { max-height: 56px; object-fit: contain; }
+  .info-panel { background: var(--white); border-radius: var(--radius-xl); padding: 28px; }
+  .car-title { font-size: 28px; font-weight: 800; margin-bottom: 8px; }
+  .rating-row { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
+  .review-count { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
+  .car-desc { font-size: 14px; color: var(--text-muted); line-height: 1.7; margin-bottom: 24px; }
+  .specs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px; }
+  .spec-item { display: flex; justify-content: space-between; }
+  .spec-label { font-size: 14px; color: var(--text-secondary); font-weight: 500; }
+  .spec-val { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+  .detail-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-light); padding-top: 24px; }
+  .big-price { font-size: 24px; font-weight: 800; }
+  .big-price span { font-size: 14px; font-weight: 500; color: var(--text-secondary); }
+  .big-price small { font-size: 13px; color: var(--text-secondary); text-decoration: line-through; display: block; }
+  .similar-section h3 { font-size: 16px; font-weight: 700; margin-bottom: 20px; color: var(--text-secondary); }
+  .cars-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<main>
+  <div id="detailContent">
+    <div style="text-align:center;padding:80px 0"><div class="spinner"></div></div>
+  </div>
+
+  <div class="similar-section">
+    <div class="section-header">
+      <h3>Recent Car</h3>
+      <a href="{% url 'category' %}" class="view-all">View All</a>
+    </div>
+    <div class="cars-grid-4" id="similarCars"><div class="spinner"></div></div>
+  </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/detail.js' %}"></script>
+{% endblock %}

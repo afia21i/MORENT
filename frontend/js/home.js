@@ -1,6 +1,5 @@
 const API = '/api';
 
-// ── HELPERS ──────────────────────────────────────────────
 function carImageHTML(car) {
   if (car.image) {
     return `<div class="car-image-wrap">
@@ -59,7 +58,6 @@ function buildCarCard(car) {
 
 function capitalize(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
 
-// ── LIKED ──────────────────────────────────────────────
 function getLiked(id) { return JSON.parse(localStorage.getItem('liked') || '[]').includes(id); }
 function toggleLike(e, id, btn) {
   e.stopPropagation();
@@ -69,8 +67,8 @@ function toggleLike(e, id, btn) {
   localStorage.setItem('liked', JSON.stringify(liked));
 }
 
-// ── NAVIGATION ──────────────────────────────────────────
-function goDetail(id) { window.location.href = `detail.html?id=${id}`; }
+function goDetail(id) { window.location.href = `/detail/?id=${id}`; }
+
 function rentCar(e, id, name) {
   e.stopPropagation();
   const booking = {
@@ -84,17 +82,15 @@ function rentCar(e, id, name) {
     dropoff_time:     document.getElementById('dropoff_time')?.value      || '',
   };
   sessionStorage.setItem('booking', JSON.stringify(booking));
-  window.location.href = `payment.html?car=${id}`;
+  window.location.href = `/payment/?car=${id}`;
 }
 
-// ── SWAP BOOKING ──────────────────────────────────────────
 function swapBooking() {
   const pl = document.getElementById('pickup_location');
   const dl = document.getElementById('dropoff_location');
   if (pl && dl) [pl.value, dl.value] = [dl.value, pl.value];
 }
 
-// ── TOAST ──────────────────────────────────────────────
 function showToast(msg, type = '') {
   const t = document.getElementById('toast');
   if (!t) return;
@@ -103,7 +99,6 @@ function showToast(msg, type = '') {
   setTimeout(() => { t.className = 'toast'; }, 3000);
 }
 
-// ── FETCH ──────────────────────────────────────────────
 async function fetchCars(endpoint, containerId) {
   const container = document.getElementById(containerId);
   if (!container) return;
@@ -132,8 +127,6 @@ async function fetchTotalCars() {
   } catch {}
 }
 
-// ── SEARCH ──────────────────────────────────────────────
-// Use event delegation so it works after navbar.js injects the search input
 let searchTimer;
 document.addEventListener('input', function (e) {
   if (e.target.id !== 'searchInput') return;
@@ -153,7 +146,6 @@ document.addEventListener('input', function (e) {
   }, 400);
 });
 
-// ── INIT ──────────────────────────────────────────────
 fetchCars('popular-cars', 'popularCars');
 fetchCars('recommended-cars', 'recommendedCars');
 fetchTotalCars();

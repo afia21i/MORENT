@@ -1,4 +1,5 @@
-const API = '/api';let allCars = [];
+const API = '/api';
+let allCars = [];
 let displayedCount = 9;
 
 function capitalize(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
@@ -66,7 +67,7 @@ function buildCard(car) {
     </div>`;
 }
 
-function goDetail(id) { window.location.href = `detail.html?id=${id}`; }
+function goDetail(id) { window.location.href = `/detail/?id=${id}`; }
 
 function rentCar(e, id, name) {
   e.stopPropagation();
@@ -80,7 +81,7 @@ function rentCar(e, id, name) {
     dropoff_time: document.getElementById('dropoff_time').value,
   };
   sessionStorage.setItem('booking', JSON.stringify(booking));
-  window.location.href = `payment.html?car=${id}`;
+  window.location.href = `/payment/?car=${id}`;
 }
 
 function swapBooking() {
@@ -89,7 +90,6 @@ function swapBooking() {
   [pl.value, dl.value] = [dl.value, pl.value];
 }
 
-// ── FILTERS ──────────────────────────────────────────────
 function getSelectedTypes() {
   return [...document.querySelectorAll('input[id^="t-"]:checked')].map(cb => cb.value);
 }
@@ -104,9 +104,9 @@ function applyFilters() {
   const search = (document.getElementById('searchInput')?.value || '').toLowerCase();
 
   const filtered = allCars.filter(car => {
-    const matchType  = !types.length || types.includes(car.type);
-    const matchSeats = !seats.length || seats.includes(car.seats) || (seats.includes(8) && car.seats >= 8);
-    const matchPrice = parseFloat(car.price_per_day) <= maxPrice;
+    const matchType   = !types.length || types.includes(car.type);
+    const matchSeats  = !seats.length || seats.includes(car.seats) || (seats.includes(8) && car.seats >= 8);
+    const matchPrice  = parseFloat(car.price_per_day) <= maxPrice;
     const matchSearch = !search || car.name.toLowerCase().includes(search) || car.brand.toLowerCase().includes(search);
     return matchType && matchSeats && matchPrice && matchSearch;
   });
@@ -142,7 +142,6 @@ function updatePrice(input) {
   applyFilters();
 }
 
-// ── SEARCH ──────────────────────────────────────────────
 let searchTimer;
 document.addEventListener('input', function (e) {
   if (e.target.id !== 'searchInput') return;
@@ -150,22 +149,12 @@ document.addEventListener('input', function (e) {
   searchTimer = setTimeout(applyFilters, 300);
 });
 
-// ── REAL SIDEBAR COUNTS ──────────────────────────────────
 async function loadCounts() {
   try {
     const res = await fetch(`${API}/car-counts/`);
     if (!res.ok) return;
     const data = await res.json();
-
-    // Type counts
-    const typeMap = {
-      'sport':     't-sport',
-      'suv':       't-suv',
-      'mpv':       't-mpv',
-      'sedan':     't-sedan',
-      'coupe':     't-coupe',
-      'hatchback': 't-hatchback',
-    };
+    const typeMap = { 'sport':'t-sport', 'suv':'t-suv', 'mpv':'t-mpv', 'sedan':'t-sedan', 'coupe':'t-coupe', 'hatchback':'t-hatchback' };
     for (const [type, id] of Object.entries(typeMap)) {
       const count = data.types[type] || 0;
       const checkbox = document.getElementById(id);
@@ -174,14 +163,7 @@ async function loadCounts() {
         if (countSpan) countSpan.textContent = `(${count})`;
       }
     }
-
-    // Seat counts
-    const seatMap = {
-      '2':  's-2',
-      '4':  's-4',
-      '6':  's-6',
-      '8+': 's-8',
-    };
+    const seatMap = { '2':'s-2', '4':'s-4', '6':'s-6', '8+':'s-8' };
     for (const [seats, id] of Object.entries(seatMap)) {
       const count = data.seats[seats] || 0;
       const checkbox = document.getElementById(id);
@@ -190,13 +172,11 @@ async function loadCounts() {
         if (countSpan) countSpan.textContent = `(${count})`;
       }
     }
-
   } catch (err) {
     console.error('Could not load counts:', err);
   }
 }
 
-// ── FETCH CARS ──────────────────────────────────────────────
 async function fetchAllCars() {
   try {
     const res = await fetch(`${API}/cars/`);
@@ -214,6 +194,5 @@ async function fetchAllCars() {
   }
 }
 
-// ── INIT ──────────────────────────────────────────────
 fetchAllCars();
 loadCounts();
